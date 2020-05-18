@@ -52,3 +52,17 @@
 .ml-15{
   margin-left: 15px;
 }
+
+.mr-50{
+  margin-right: 50px;
+}
+
+.text-right{
+  text-align: right;
+}
+.pl-15{
+  padding-left: 15px;
+}
+.ml-100{
+  margin-left: 100px;
+}

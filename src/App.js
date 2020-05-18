@@ -13,6 +13,8 @@ class App extends Component {
             tasks :[{
 
             }]
+            ,
+            isDisplay: true
       };
     }
     componentWillMount = () =>
@@ -60,10 +62,17 @@ class App extends Component {
     {
         return this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() ;
     }
+
+    onChangeDisplay = (param) =>{
+        this.setState({
+            isDisplay: param
+        })
+    }
   render() {
 
-    var {tasks} = this.state;
-
+    var {tasks, isDisplay} = this.state;
+    var eleTaskForm = isDisplay === true ? <TaskForm display ={isDisplay} 
+                                            onReceiveDisplay = {this.onChangeDisplay}/>:'';
     return (
       <div className="container">
         <div className="text-center">
@@ -71,11 +80,11 @@ class App extends Component {
           <hr />
         </div>
         <div className="row">
-        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <TaskForm />
+        <div className={isDisplay? "col-xs-4 col-sm-4 col-md-4 col-lg-4" : "0"}>
+            {eleTaskForm}
           </div>
-          <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-            <AddWorks />
+          <div className={isDisplay? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"}>
+            <AddWorks display = {isDisplay} onReceiveDisplay = {this.onChangeDisplay}/>
             <button type="button" className="btn btn-danger mt-15 ml-15" 
             onClick = {this.onGenerateData}
             >

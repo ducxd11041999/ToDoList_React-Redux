@@ -1,12 +1,26 @@
 import React, {Component} from 'react';
 
 class TaskForm extends Component {
+
+  constructor(props) {
+    super(props);
+  
+    this.state = {};
+  }
+
+  onCloseForm = () =>
+  {
+    if(this.props.display)
+      this.props.onReceiveDisplay(!this.props.display)
+  }
   render() {
     return (
           <div className="panel panel-warning">
               <div className="panel-heading">
                 <h3 className="panel-title">Thêm Công Việc
-                <span className="fa fa-times-circle text-right"></span>
+                <span className="fa fa-times-circle text-right ml-100 btn btn-warning text-right" 
+                onClick = {this.onCloseForm}
+                ></span>
                 </h3>
               </div>
               <div className="panel-body">
