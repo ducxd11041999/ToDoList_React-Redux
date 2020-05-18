@@ -8,9 +8,7 @@ class AddWorks extends Component {
 	  this.state = {};
 	}
 	onToggleForm = () =>{
-		console.log(this.props.display)
 		this.props.onReceiveDisplay(!this.props.display)
-		
 	}
   render() {
     return (

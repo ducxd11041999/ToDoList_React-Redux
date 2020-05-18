@@ -5,7 +5,13 @@ class TaskList extends Component {
     var {tasks} = this.props;
     var elementTask = tasks.map((task, index) =>
     {
-        return <TaskItem key={index} index={index} task ={task}/>
+        return <TaskItem 
+        key={index} 
+        index={index} 
+        task ={task}
+        onUpdateStatus = {this.props.onUpdateStatus}
+        />
+
     })
     return (
           <table className="table table-bordered table-hover mt-15">
