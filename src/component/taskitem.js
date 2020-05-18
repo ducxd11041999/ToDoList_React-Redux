@@ -5,6 +5,16 @@ class TaskItem extends Component {
   {
       this.props.onUpdateStatus(this.props.task.id);
   }
+
+  onRemoveTask = () => 
+  {
+      this.props.onRemoveTask(this.props.task.id);
+  }
+
+  onEditData = () =>
+  {
+      this.props.onEditData(this.props);
+  }
   render() {
     var {task , index} = this.props;
     return (
@@ -12,18 +22,18 @@ class TaskItem extends Component {
         <td>{index + 1}</td>
         <td>{task.name}</td>
         <td className="text-center">
-        <span className = {task.status === false ? "label label-danger":"label label-success"}
+        <span className = {task.status === true ?"label label-success" : "label label-danger"}
             onClick = {this.onUpdateStatus}
         >
         {task.status === true ? "Kich hoạt":"Ẩn"}
         </span>
       </td>
       <td className="text-center">
-          <button type="button" className="btn btn-warning">
+          <button type="button" className="btn btn-warning" onClick ={this.onEditData}>
             <span className="fa fa-pencil mr-5" />Sửa
           </button>
             &nbsp;
-          <button type="button" className="btn btn-danger">
+          <button type="button" className="btn btn-danger" onClick = {this.onRemoveTask}>
             <span className="fa fa-trash mr-5" />Xóa
           </button>
         </td>

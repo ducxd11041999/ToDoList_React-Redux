@@ -14,7 +14,8 @@ class App extends Component {
 
             }]
             ,
-            isDisplay: true
+            isDisplay: false,
+            taskediting: null
       };
     }
     componentDidMount() 
@@ -70,22 +71,30 @@ class App extends Component {
     }
     onReceiveTask = (param) =>
     {
-           var {tasks} = this.state
+        //console.log(param)
+       var {tasks} = this.state
+       if(param.id === ''){
            param.id = this.GenerateID();
            tasks.push(param);
-           this.setState(
-           {
-                tasks:tasks
-           })
+       }else{
+        //diting
+            var index = this.findIndex(param.id)
+            tasks[index] = param
+       }
+       this.setState({
+            tasks:tasks,
+            taskediting:null,
+            isDisplay: false
+            })
         localStorage.setItem('tasks' , JSON.stringify(tasks));
     }
 
     onUpdateStatus = (id) =>
     {
-        console.log(id);
+        //console.log(id);
         var {tasks} = this.state
         var index = this.findIndex(id)
-        console.log(index)
+        //console.log(index)
         if(index !== -1)
         {
             tasks[index].status = !tasks[index].status;
@@ -109,12 +118,46 @@ class App extends Component {
         })
         return result;
     }
+    onRemoveTask = (param) =>{
+        var {tasks} = this.state
+        var index = this.findIndex(param)
+        //console.log(index)
+        if(index !== -1)
+        {
+            tasks.splice(index , 1)
+            this.setState(
+            {
+                tasks: tasks,
+                isDisplay: false
+            });
+            localStorage.setItem('tasks' , JSON.stringify(tasks));
+        }
+
+    }
+
+    onEditData = (param) =>{
+        var {tasks} = this.state
+        var index = this.findIndex(param.task.id)
+        //console.log("index")
+        var taskediting = tasks[index]
+        this.setState(
+        {
+            taskediting: taskediting,
+            isDisplay: true
+        },() =>{
+            //console.log(this.state.taskediting)
+        });
+        //console.log(taskediting)
+        localStorage.setItem('tasks' , JSON.stringify(tasks));
+        
+    }
   render() {
 
     var {tasks, isDisplay} = this.state;
     var eleTaskForm = isDisplay === true ? <TaskForm display ={isDisplay} 
                                             onReceiveDisplay = {this.onChangeDisplay}
                                             onReceiveTask = {this.onReceiveTask}
+                                            taskEdit = {this.state.taskediting}
                                             />:'';
     return (
       <div className="container">
@@ -138,7 +181,11 @@ class App extends Component {
             </div>
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <TaskList tasks={tasks} onUpdateStatus = {this.onUpdateStatus}/>
+                <TaskList tasks={tasks} 
+                onUpdateStatus = {this.onUpdateStatus}
+                onRemoveTask = {this.onRemoveTask}
+                onEditData =  {this.onEditData}
+                />
               </div>
             </div>
           </div>
