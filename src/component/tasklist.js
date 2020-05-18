@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import TaskItem from './taskitem.js'
 class TaskList extends Component {
   render() {
-
     var {tasks} = this.props;
     var elementTask = tasks.map((task, index) =>
     {
-        return <TaskItem key={task.id} index={index} task ={task}/>
+        return <TaskItem key={index} index={index} task ={task}/>
     })
     return (
           <table className="table table-bordered table-hover mt-15">

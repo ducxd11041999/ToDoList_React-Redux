@@ -17,14 +17,14 @@ class App extends Component {
             isDisplay: true
       };
     }
-    componentWillMount = () =>
+    UNSAFE_componentWillMount() 
     {
         if(localStorage && localStorage.getItem('tasks'))
         {
             var tasks = JSON.parse(localStorage.getItem('tasks'));
             this.setState({
                 tasks : tasks
-            })
+            });
         }
     }
     onGenerateData = () =>
@@ -68,11 +68,24 @@ class App extends Component {
             isDisplay: param
         })
     }
+    onReceiveTask = (param) =>
+    {
+           var {tasks} = this.state
+           param.id = this.GenerateID();
+           tasks.push(param);
+           this.setState(
+           {
+                tasks:tasks
+           })
+        localStorage.setItem('tasks' , JSON.stringify(tasks));
+    }
   render() {
 
     var {tasks, isDisplay} = this.state;
     var eleTaskForm = isDisplay === true ? <TaskForm display ={isDisplay} 
-                                            onReceiveDisplay = {this.onChangeDisplay}/>:'';
+                                            onReceiveDisplay = {this.onChangeDisplay}
+                                            onReceiveTask = {this.onReceiveTask}
+                                            />:'';
     return (
       <div className="container">
         <div className="text-center">
