@@ -5,11 +5,20 @@ class AddWorks extends Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {};
+	  this.state = {
+    };
 	}
 	onToggleForm = () =>{
-		this.props.onReceiveDisplay(!this.props.display)
-	}
+    if (this.props.taskediting)
+    {
+        console.log("here")
+        this.props.onReceiveDisplay({ds:true, taskEditing:null})
+    }
+    else
+    {
+		    this.props.onReceiveDisplay({ds:!this.props.display, taskEditing:null})
+	  }
+  }
   render() {
     return (
 

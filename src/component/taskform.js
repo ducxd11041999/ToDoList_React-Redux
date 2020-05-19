@@ -7,7 +7,7 @@ class TaskForm extends Component {
     this.state = {
       id: '',
       name: '',
-      status: false
+      status: true
     };
   }
 
@@ -22,7 +22,10 @@ class TaskForm extends Component {
     var target = event.target
     var name = target.name
     var value = target.value
-    console.log(value)
+    if (name ==='status')
+    {
+        value = (value === "true" ? true : false);
+    }
     this.setState(
     {
       [name]:value
@@ -52,10 +55,31 @@ class TaskForm extends Component {
         this.setState({
           id: this.props.taskEdit.id,
           name: this.props.taskEdit.name,
-          status:  Boolean(this.props.taskEdit.status)
-          
+          status:Boolean(this.props.taskEdit.status)
         })
        // console.log(this.state)
+      }
+  }
+
+  componentWillReceiveProps(nextProps)
+  {
+      //console.log(nextProps.taskEdit)
+      if(nextProps && (nextProps.taskEdit))
+      {
+        this.setState({
+          id: nextProps.taskEdit.id,
+          name: nextProps.taskEdit.name,
+          status:Boolean(nextProps.taskEdit.status)
+        })
+       // console.log(this.state)
+      }
+      else
+      {
+       this.setState({
+        id: '',
+        name:'',
+        status: false
+        })
       }
   }
   render() {

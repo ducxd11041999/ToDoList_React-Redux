@@ -4,6 +4,7 @@ import TaskForm from './component/taskform.js'
 import Control from './component/control.js'
 import AddWorks from './component/addwork.js'
 import TaskList from './component/tasklist.js'
+import _ from 'lodash'
 class App extends Component {
 
     constructor(props) {
@@ -15,7 +16,16 @@ class App extends Component {
             }]
             ,
             isDisplay: false,
-            taskediting: null
+            taskediting: null,
+            filter: {
+                name:'',
+                status: -1
+            },
+            keyWord: '',
+            sort: {
+                by: '',
+                value: 1
+            }
       };
     }
     componentDidMount() 
@@ -66,7 +76,10 @@ class App extends Component {
 
     onChangeDisplay = (param) =>{
         this.setState({
-            isDisplay: param
+            isDisplay: param.ds,
+            taskediting: param.taskEditing
+        }, () =>{
+            //console.log("editting")
         })
     }
     onReceiveTask = (param) =>
@@ -93,7 +106,10 @@ class App extends Component {
     {
         //console.log(id);
         var {tasks} = this.state
-        var index = this.findIndex(id)
+        //var index = this.findIndex(id)
+        var index = _.findIndex(tasks, (task)=>{
+            return task.id === id
+        })
         //console.log(index)
         if(index !== -1)
         {
@@ -151,9 +167,87 @@ class App extends Component {
         localStorage.setItem('tasks' , JSON.stringify(tasks));
         
     }
-  render() {
 
-    var {tasks, isDisplay} = this.state;
+    onFilter = (fName, fStatus) =>
+    {
+            //console.log(fName + " " + fStatus)
+            fStatus = parseInt(fStatus, 10);
+            this.setState(
+            {
+                filter:{
+                    name: fName,
+                    status: fStatus
+                }
+            })
+            
+    }
+
+    onSearch = (param) =>{
+       this.setState({
+            keyWord : param
+       })
+    }
+
+    onSort = (param) =>{
+        //console.log(param)
+        this.setState(
+        {
+            sort:{
+                by: param.sort.by,
+                value: param.sort.value
+            }
+        },()=>{
+             console.log(this.state.sort)
+        })
+     
+    }
+  render() {
+    var {tasks, isDisplay, filter, keyWord, sort} = this.state;
+    if(filter)
+    {
+        if(filter.name)
+        {
+            filter.name = filter.name.toLowerCase();
+            tasks = tasks.filter((task) =>{
+                return task.name.toLowerCase().indexOf(filter.name) !== -1;
+            });
+        }
+        tasks = tasks.filter((task) =>{
+                if(filter.status === -1)
+                {
+                    return task;
+                }else{
+                    return task.status === (filter.status === 1? true:false)
+                }
+            });
+
+    }
+
+    if(keyWord)
+    {
+        tasks = tasks.filter((task) =>{
+            return task.name.toLowerCase().indexOf(keyWord.toLowerCase()) !== -1; 
+        })
+    }
+
+    if(sort.by ==='name')
+    {
+        tasks.sort((a, b)=>{
+            if(a.name > b.name)
+                return sort.value;
+            else if(a.name < b.name)
+                return -sort.value
+            else return 0;
+        });
+    }else{
+        tasks.sort((a, b)=>{
+            if(a.status > b.status)
+                return sort.value;
+            else if(a.status < b.status)
+                return -sort.value
+            else return 0;
+        });
+    }
     var eleTaskForm = isDisplay === true ? <TaskForm display ={isDisplay} 
                                             onReceiveDisplay = {this.onChangeDisplay}
                                             onReceiveTask = {this.onReceiveTask}
@@ -170,14 +264,17 @@ class App extends Component {
             {eleTaskForm}
           </div>
           <div className={isDisplay? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"}>
-            <AddWorks display = {isDisplay} onReceiveDisplay = {this.onChangeDisplay}/>
+            <AddWorks display = {isDisplay} taskediting = {this.state.taskediting}  onReceiveDisplay = {this.onChangeDisplay}/>
             <button type="button" className="btn btn-danger mt-15 ml-15" 
             onClick = {this.onGenerateData}
             >
                 <span className="fa fa-plus mr-5" />Generate data
             </button>
             <div className="row mt-15">
-                <Control />
+                <Control 
+                onSearch = {this.onSearch}
+                onSort = {this.onSort}
+                />
             </div>
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -185,6 +282,7 @@ class App extends Component {
                 onUpdateStatus = {this.onUpdateStatus}
                 onRemoveTask = {this.onRemoveTask}
                 onEditData =  {this.onEditData}
+                onFilter = {this.onFilter}
                 />
               </div>
             </div>
