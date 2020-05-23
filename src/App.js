@@ -5,6 +5,7 @@ import Control from './component/control.js'
 import AddWorks from './component/addwork.js'
 import TaskList from './component/tasklist.js'
 import _ from 'lodash'
+import demo from './trainning/demo.js'
 class App extends Component {
 
     constructor(props) {
