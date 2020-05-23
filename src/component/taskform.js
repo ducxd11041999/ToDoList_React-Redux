@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import  {connect} from 'react-redux'
+import * as action from './../action/index.js'
 
 class TaskForm extends Component {
 
@@ -13,8 +15,7 @@ class TaskForm extends Component {
 
   onCloseForm = () =>
   {
-    if(this.props.display)
-      this.props.onReceiveDisplay(!this.props.display)
+     this.props.closeForm();
   }
 
   onChage =(event)=>
@@ -22,10 +23,7 @@ class TaskForm extends Component {
     var target = event.target
     var name = target.name
     var value = target.value
-    if (name ==='status')
-    {
-        value = (value === "true" ? true : false);
-    }
+    console.log(value)
     this.setState(
     {
       [name]:value
@@ -34,7 +32,8 @@ class TaskForm extends Component {
 
   onSubmit = (event) =>{
     event.preventDefault(); 
-    this.props.onReceiveTask(this.state);
+    //this.props.onReceiveTask(this.state);
+    this.props.onAddTask(this.state)
     this.onClear();
     this.onCloseForm();
   }
@@ -44,7 +43,7 @@ class TaskForm extends Component {
     this.setState({
       id: '',
       name:'',
-      status: false
+      status: true
     })
   }
 
@@ -60,7 +59,7 @@ class TaskForm extends Component {
        // console.log(this.state)
       }
   }
-
+/*
   componentWillReceiveProps(nextProps)
   {
       //console.log(nextProps.taskEdit)
@@ -82,6 +81,7 @@ class TaskForm extends Component {
         })
       }
   }
+  */  
   render() {
     var {id} = this.state
     return (
@@ -124,4 +124,21 @@ class TaskForm extends Component {
     );
   }
 }
-export default TaskForm
+
+const mapStateToProps = (state) =>{
+      return {
+
+      }
+}
+
+const mapDispatchToProps = (dispatch, props) =>{
+    return {
+      onAddTask : (task) =>{
+        dispatch(action.addTask(task));
+      },
+      closeForm : () =>{
+        dispatch(action.closeForm())
+      }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TaskForm)

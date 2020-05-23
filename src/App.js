@@ -5,18 +5,15 @@ import Control from './component/control.js'
 import AddWorks from './component/addwork.js'
 import TaskList from './component/tasklist.js'
 import _ from 'lodash'
-import demo from './trainning/demo.js'
+import {connect} from 'react-redux'
+import * as action from './action/index.js'
+//import demo from './trainning/demo.js'
 class App extends Component {
 
     constructor(props) {
       super(props);
     
       this.state = {
-            tasks :[{
-
-            }]
-            ,
-            isDisplay: false,
             taskediting: null,
             filter: {
                 name:'',
@@ -28,16 +25,6 @@ class App extends Component {
                 value: 1
             }
       };
-    }
-    componentDidMount() 
-    {
-        if(localStorage && localStorage.getItem('tasks'))
-        {
-            var tasks = JSON.parse(localStorage.getItem('tasks'));
-            this.setState({
-                tasks : tasks
-            });
-        }
     }
     onGenerateData = () =>
     {
@@ -67,42 +54,16 @@ class App extends Component {
         
     }
 
-    s4(){
-        return Math.floor((1+ Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    GenerateID()
-    {
-        return this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() + "-" + this.s4() ;
-    }
-
     onChangeDisplay = (param) =>{
-        this.setState({
-            isDisplay: param.ds,
-            taskediting: param.taskEditing
-        }, () =>{
-            //console.log("editting")
-        })
+        // this.setState({
+        //     isDisplay: param.ds,
+        //     taskediting: param.taskEditing
+        // }, () =>{
+        //     //console.log("editting")
+        // })
+        this.props.onToggleForm();
     }
-    onReceiveTask = (param) =>
-    {
-        //console.log(param)
-       var {tasks} = this.state
-       if(param.id === ''){
-           param.id = this.GenerateID();
-           tasks.push(param);
-       }else{
-        //diting
-            var index = this.findIndex(param.id)
-            tasks[index] = param
-       }
-       this.setState({
-            tasks:tasks,
-            taskediting:null,
-            isDisplay: false
-            })
-        localStorage.setItem('tasks' , JSON.stringify(tasks));
-    }
-
+    
     onUpdateStatus = (id) =>
     {
         //console.log(id);
@@ -203,7 +164,14 @@ class App extends Component {
      
     }
   render() {
-    var {tasks, isDisplay, filter, keyWord, sort} = this.state;
+    /*var {
+        filter, 
+        keyWord,
+        sort} = this.state;*/
+
+    var {isDisplay} = this.props;
+    console.log(isDisplay)
+    /*
     if(filter)
     {
         if(filter.name)
@@ -249,9 +217,10 @@ class App extends Component {
             else return 0;
         });
     }
-    var eleTaskForm = isDisplay === true ? <TaskForm display ={isDisplay} 
+    */
+    var eleTaskForm = isDisplay === true ? <TaskForm 
+                                            display ={isDisplay} 
                                             onReceiveDisplay = {this.onChangeDisplay}
-                                            onReceiveTask = {this.onReceiveTask}
                                             taskEdit = {this.state.taskediting}
                                             />:'';
     return (
@@ -279,7 +248,8 @@ class App extends Component {
             </div>
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <TaskList tasks={tasks} 
+                <TaskList 
+
                 onUpdateStatus = {this.onUpdateStatus}
                 onRemoveTask = {this.onRemoveTask}
                 onEditData =  {this.onEditData}
@@ -293,4 +263,25 @@ class App extends Component {
     );
   }
 }
-export default App
+
+const mapStateToProps = (state) =>{
+    return (
+       {
+            isDisplay : state.isDisplayForm
+       } 
+    )
+}
+
+const mapDispatchToProps = (dispatch, props) =>{
+    return ({
+        onToggleForm : () =>
+        {
+            dispatch(action.toggleForm())
+        },
+        onCloseForm : () =>
+        {
+            dispatch(action.closeForm())
+        }
+    })
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App)
