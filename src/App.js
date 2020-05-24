@@ -11,7 +11,6 @@ class App extends Component {
 
     constructor(props) {
       super(props);
-    
       this.state = {
             filter: {
                 name:'',
@@ -26,8 +25,15 @@ class App extends Component {
     }
    
     onChangeDisplay = (param) =>{
-        this.props.onToggleForm();
-    }
+        if(!this.props.itemEdit && this.props.itemEdit.id)
+        {
+
+        }
+        else
+        {
+            this.props.onToggleForm();
+        }
+    }   
     
     onFilter = (fName, fStatus) =>
     {
@@ -140,7 +146,6 @@ class App extends Component {
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <TaskList 
-                onEditData =  {this.onEditData}
                 onFilter = {this.onFilter}
                 />
               </div>
@@ -156,7 +161,8 @@ const mapStateToProps = (state) =>{
     return (
        {
             isDisplay : state.isDisplayForm,
-            tasks : state.tasks
+            tasks : state.tasks,
+            itemEdit: state.itemEdit
        } 
     )
 }
@@ -170,6 +176,10 @@ const mapDispatchToProps = (dispatch, props) =>{
         onCloseForm : () =>
         {
             dispatch(action.closeForm())
+        },
+        onClearTask: (task) =>
+        {
+          dispatch(action.editTask(task));
         }
     })
 }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import TaskItem from './taskitem.js'
 import  {connect} from 'react-redux'
+import * as action from './../action/index.js'
 class TaskList extends Component {
   constructor(props) {
     super(props);
@@ -15,27 +16,47 @@ class TaskList extends Component {
       var target = event.target;
       var name = target.name;
       var value = target.value;
-      this.props.onFilter(
-          name === "filterName" ? value: this.state.filterName,
-          name === "filterStutus" ? value : this.state.filterStutus
-      )
+      var filter = {
+          name : name === "filterName" ? value: this.state.filterName,
+          status: name === "filterStutus" ? value : this.state.filterStutus
+      }
+      this.props.onFilterTable(filter)
       this.setState({
           [name] : value
       })
   }
   render() {
     //console.log(this.props.todos)
-    var {tasks} = this.props;
-    var {filterName, filterStutus} = this.state;
+    var {tasks, filter} = this.props;
+    console.log(filter)
+    if(filter)
+    {
+        if(filter.name)
+        {
+            filter.name = filter.name.toLowerCase();
+            tasks = tasks.filter((task) =>{
+                return task.name.toLowerCase().indexOf(filter.name) !== -1;
+            });
+        }
+        tasks = tasks.filter((task) =>{
+                if(filter.status === -1)
+                {
+                    return task;
+                }else{
+                    return task.status === (filter.status === 1? true:false)
+                }
+            });
+
+    }
+    var filterName = filter.name;
+    var filterStutus = filter.status;
     var elementTask = tasks.map((task, index) =>
     {
         return <TaskItem 
         key={index} 
         index={index} 
         task ={task}
-        onEditData =  {this.props.onEditData}
         />
-
     })
     return (
           <table className="table table-bordered table-hover mt-15">
@@ -80,7 +101,15 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) =>{
     return ({
-        tasks: state.tasks
+        tasks: state.tasks,
+        filter : state.filter
     })
 }
-export default connect(mapStateToProps, null)(TaskList)
+const mapDispatchToProps = (dispatch, props) =>{
+    return ({
+        onFilterTable: (filter) =>{
+              dispatch(action.filterTask(filter))
+        }
+    })
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

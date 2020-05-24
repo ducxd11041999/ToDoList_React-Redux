@@ -9,20 +9,18 @@ class AddWorks extends Component {
     };
 	}
 	onToggleForm = () =>{
-    if (this.props.taskediting)
-    {
-        console.log("here")
-        this.props.onReceiveDisplay({ds:true, taskEditing:null})
-    }
-    else
+    console.log(this.props)
+    if(this.props.taskEdit && this.props.taskEdit.id !==null){
+        this.props.openForm();
+    }else
     {
 		    this.props.onToggleForm()
+    }
         this.props.onClearTask({
           id :'',
           name: '',
           status: true
         });
-	  }
   }
   render() {
     return (
@@ -38,7 +36,7 @@ class AddWorks extends Component {
 
 const mapStateToProps = (state) =>{
       return {
-
+          taskEdit : state.itemEdit
       }
 }
 
@@ -51,7 +49,10 @@ const mapDispatchToProps = (dispatch, props) =>{
       onClearTask: (task) =>
       {
           dispatch(action.editTask(task));
-      }
+      },
+      openForm : () =>{
+          dispatch(action.openForm())
+        },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddWorks)
