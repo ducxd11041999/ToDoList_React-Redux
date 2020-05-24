@@ -1,10 +1,10 @@
-
+import  {connect} from 'react-redux'
+import * as action from './../action/index.js'
 import React, {Component} from 'react'
 class AddWorks extends Component {
 
 	constructor(props) {
 	  super(props);
-	
 	  this.state = {
     };
 	}
@@ -16,7 +16,12 @@ class AddWorks extends Component {
     }
     else
     {
-		    this.props.onReceiveDisplay({ds:!this.props.display, taskEditing:null})
+		    this.props.onToggleForm()
+        this.props.onClearTask({
+          id :'',
+          name: '',
+          status: true
+        });
 	  }
   }
   render() {
@@ -31,4 +36,22 @@ class AddWorks extends Component {
   }
 }
 
-export default AddWorks
+const mapStateToProps = (state) =>{
+      return {
+
+      }
+}
+
+const mapDispatchToProps = (dispatch, props) =>{
+    return {
+      onToggleForm: () =>
+      {
+          dispatch(action.toggleForm());
+      },
+      onClearTask: (task) =>
+      {
+          dispatch(action.editTask(task));
+      }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(AddWorks)

@@ -4,7 +4,6 @@ import TaskForm from './component/taskform.js'
 import Control from './component/control.js'
 import AddWorks from './component/addwork.js'
 import TaskList from './component/tasklist.js'
-import _ from 'lodash'
 import {connect} from 'react-redux'
 import * as action from './action/index.js'
 //import demo from './trainning/demo.js'
@@ -14,7 +13,6 @@ class App extends Component {
       super(props);
     
       this.state = {
-            taskediting: null,
             filter: {
                 name:'',
                 status: -1
@@ -26,110 +24,11 @@ class App extends Component {
             }
       };
     }
-    onGenerateData = () =>
-    {
-        var tasks = [
-        {
-            id: this.GenerateID(),
-            name : "Hoc choi game",
-            status : true
-        },
-            {
-            id: this.GenerateID(),
-            name : "Di ia",
-            status : true
-        },
-        {
-            id: this.GenerateID(),
-            name : "Di hoc",
-            status : true
-        }]
-
-        this.setState(
-            {
-                tasks : tasks
-            }
-        );
-        localStorage.setItem('tasks' , JSON.stringify(tasks));
-        
-    }
-
+   
     onChangeDisplay = (param) =>{
-        // this.setState({
-        //     isDisplay: param.ds,
-        //     taskediting: param.taskEditing
-        // }, () =>{
-        //     //console.log("editting")
-        // })
         this.props.onToggleForm();
     }
     
-    onUpdateStatus = (id) =>
-    {
-        //console.log(id);
-        var {tasks} = this.state
-        //var index = this.findIndex(id)
-        var index = _.findIndex(tasks, (task)=>{
-            return task.id === id
-        })
-        //console.log(index)
-        if(index !== -1)
-        {
-            tasks[index].status = !tasks[index].status;
-            this.setState(
-            {
-                tasks: tasks
-            });
-            localStorage.setItem('tasks' , JSON.stringify(tasks));
-        }
-    }
-
-    findIndex(id)
-    {
-        var {tasks} = this.state;
-        var result = -1;
-        tasks.forEach((task, index) =>
-        {
-            if(task.id === id){
-                result = index;
-            }
-        })
-        return result;
-    }
-    onRemoveTask = (param) =>{
-        var {tasks} = this.state
-        var index = this.findIndex(param)
-        //console.log(index)
-        if(index !== -1)
-        {
-            tasks.splice(index , 1)
-            this.setState(
-            {
-                tasks: tasks,
-                isDisplay: false
-            });
-            localStorage.setItem('tasks' , JSON.stringify(tasks));
-        }
-
-    }
-
-    onEditData = (param) =>{
-        var {tasks} = this.state
-        var index = this.findIndex(param.task.id)
-        //console.log("index")
-        var taskediting = tasks[index]
-        this.setState(
-        {
-            taskediting: taskediting,
-            isDisplay: true
-        },() =>{
-            //console.log(this.state.taskediting)
-        });
-        //console.log(taskediting)
-        localStorage.setItem('tasks' , JSON.stringify(tasks));
-        
-    }
-
     onFilter = (fName, fStatus) =>
     {
             //console.log(fName + " " + fStatus)
@@ -170,7 +69,7 @@ class App extends Component {
         sort} = this.state;*/
 
     var {isDisplay} = this.props;
-    console.log(isDisplay)
+    //console.log(isDisplay)
     /*
     if(filter)
     {
@@ -218,11 +117,6 @@ class App extends Component {
         });
     }
     */
-    var eleTaskForm = isDisplay === true ? <TaskForm 
-                                            display ={isDisplay} 
-                                            onReceiveDisplay = {this.onChangeDisplay}
-                                            taskEdit = {this.state.taskediting}
-                                            />:'';
     return (
       <div className="container">
         <div className="text-center">
@@ -230,16 +124,13 @@ class App extends Component {
           <hr />
         </div>
         <div className="row">
-        <div className={isDisplay? "col-xs-4 col-sm-4 col-md-4 col-lg-4" : "0"}>
-            {eleTaskForm}
-          </div>
+            <div className={isDisplay? "col-xs-4 col-sm-4 col-md-4 col-lg-4" : "0"}>
+                <TaskForm />
+            </div>
           <div className={isDisplay? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12"}>
-            <AddWorks display = {isDisplay} taskediting = {this.state.taskediting}  onReceiveDisplay = {this.onChangeDisplay}/>
-            <button type="button" className="btn btn-danger mt-15 ml-15" 
-            onClick = {this.onGenerateData}
-            >
-                <span className="fa fa-plus mr-5" />Generate data
-            </button>
+                <div>
+                    <AddWorks />
+                </div>
             <div className="row mt-15">
                 <Control 
                 onSearch = {this.onSearch}
@@ -249,9 +140,6 @@ class App extends Component {
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <TaskList 
-
-                onUpdateStatus = {this.onUpdateStatus}
-                onRemoveTask = {this.onRemoveTask}
                 onEditData =  {this.onEditData}
                 onFilter = {this.onFilter}
                 />
@@ -267,7 +155,8 @@ class App extends Component {
 const mapStateToProps = (state) =>{
     return (
        {
-            isDisplay : state.isDisplayForm
+            isDisplay : state.isDisplayForm,
+            tasks : state.tasks
        } 
     )
 }
