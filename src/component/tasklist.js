@@ -26,9 +26,9 @@ class TaskList extends Component {
       })
   }
   render() {
-    //console.log(this.props.todos)
-    var {tasks, filter} = this.props;
-    console.log(filter)
+    console.log(this.props)
+    var {tasks, filter, keyWord} = this.props;
+    //console.log(filter)
     if(filter)
     {
         if(filter.name)
@@ -47,6 +47,12 @@ class TaskList extends Component {
                 }
             });
 
+    }
+    if(keyWord)
+    {
+        tasks = tasks.filter((task) =>{
+            return task.name.toLowerCase().indexOf(keyWord.toLowerCase()) !== -1; 
+        })
     }
     var filterName = filter.name;
     var filterStutus = filter.status;
@@ -102,7 +108,8 @@ class TaskList extends Component {
 const mapStateToProps = (state) =>{
     return ({
         tasks: state.tasks,
-        filter : state.filter
+        filter : state.filter,
+        keyWord : state.search
     })
 }
 const mapDispatchToProps = (dispatch, props) =>{
