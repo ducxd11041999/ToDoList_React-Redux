@@ -12,11 +12,6 @@ class App extends Component {
     constructor(props) {
       super(props);
       this.state = {
-            keyWord: '',
-            sort: {
-                by: '',
-                value: 1
-            }
       };
     }
    
@@ -32,55 +27,9 @@ class App extends Component {
     }   
 
 
-    onSort = (param) =>{
-        //console.log(param)
-        this.setState(
-        {
-            sort:{
-                by: param.sort.by,
-                value: param.sort.value
-            }
-        },()=>{
-             console.log(this.state.sort)
-        })
-     
-    }
   render() {
-    /*var {
-        filter, 
-        keyWord,
-        sort} = this.state;*/
 
     var {isDisplay} = this.props;
-    //console.log(isDisplay)
-    /*
-
-    if(keyWord)
-    {
-        tasks = tasks.filter((task) =>{
-            return task.name.toLowerCase().indexOf(keyWord.toLowerCase()) !== -1; 
-        })
-    }
-
-    if(sort.by ==='name')
-    {
-        tasks.sort((a, b)=>{
-            if(a.name > b.name)
-                return sort.value;
-            else if(a.name < b.name)
-                return -sort.value
-            else return 0;
-        });
-    }else{
-        tasks.sort((a, b)=>{
-            if(a.status > b.status)
-                return sort.value;
-            else if(a.status < b.status)
-                return -sort.value
-            else return 0;
-        });
-    }
-    */
     return (
       <div className="container">
         <div className="text-center">
@@ -96,9 +45,7 @@ class App extends Component {
                     <AddWorks />
                 </div>
             <div className="row mt-15">
-                <Control 
-                    onSort = {this.onSort}
-                />
+                <Control />
             </div>
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
